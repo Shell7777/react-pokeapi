@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Head from './components/molecules/Head';
 import ButtonNav from './components/organisms/ButtonNav';
 import Header from './components/organisms/Header';
@@ -11,34 +11,38 @@ function App() {
   const [urlPrevios, seturlPrevios] = useState([]);
   const [urlNext, seturlNext] = useState([]);
 
-  const getData = async (apiPokemon = 'https://pokeapi.co/api/v2/pokemon/') => {
-    const data = await fetch(apiPokemon);
-    const { results, next, previous } = await data.json();
-    const newResults = getImages(results);
-    setlistPokemons(newResults);
-    seturlNext(next);
-    seturlPrevios(previous);
-  };
+  const getPokemons = useCallback(
+    async (apiPokemon = 'https://pokeapi.co/api/v2/pokemon/') => {
+      const getImages = (results) => {
+        return results.map((item) => {
+          const name = item.name;
+          const numberImg = Number(item.url.split('/')[6]);
+          const urlImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${numberImg}.png`;
+          return { name, urlImage, pokedex: numberImg };
+        });
+      };
+      const data = await fetch(apiPokemon);
+      const { results, next, previous } = await data.json();
+      const newResults = getImages(results);
+      setlistPokemons(newResults);
+      seturlNext(next);
+      seturlPrevios(previous);
+    },
+    []
+  );
 
-  const getImages = (results) => {
-    return results.map((item) => {
-      const name = item.name;
-      const numberImg = Number(item.url.split('/')[6]);
-      const urlImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${numberImg}.png`;
-      return { name, urlImage, pokedex: numberImg };
-    });
-  };
   const onClickNext = () => {
     if (urlNext === null) return;
-    getData(urlNext);
+    getPokemons(urlNext);
   };
   const onClickPrevius = () => {
     if (urlPrevios === null) return;
-    getData(urlPrevios);
+    getPokemons(urlPrevios);
   };
   useEffect(() => {
-    getData();
-  }, []);
+    console.log('use efect ( [])');
+    getPokemons();
+  }, [getPokemons]);
   return (
     <div className="App">
       <Head />
