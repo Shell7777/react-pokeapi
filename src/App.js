@@ -10,10 +10,6 @@ function App() {
   const [listPokemons, setlistPokemons] = useState([]);
   const [urlPrevios, seturlPrevios] = useState([]);
   const [urlNext, seturlNext] = useState([]);
-  useEffect(() => {
-    getData();
-    console.log('se llama a efect');
-  }, []);
 
   const getData = async (apiPokemon = 'https://pokeapi.co/api/v2/pokemon/') => {
     const data = await fetch(apiPokemon);
@@ -40,6 +36,9 @@ function App() {
     if (urlPrevios === null) return;
     getData(urlPrevios);
   };
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <div className="App">
       <Head />

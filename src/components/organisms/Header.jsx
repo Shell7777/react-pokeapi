@@ -5,7 +5,7 @@ const Header = () => {
     'https://logos-marcas.com/wp-content/uploads/2020/05/Pokemon-Logo-650x366.png';
   return (
     <div id="header-content">
-      <img id="header-img" src={img}></img>
+      <img id="header-img" alt="no-data" src={img}></img>
     </div>
   );
 };
